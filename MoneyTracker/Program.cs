@@ -1,9 +1,9 @@
 ﻿//Settings
-using MoneyTracker.Pages;
+using MoneyTracker;
 using Spectre.Console;
 
 Style MenuStyle = new(Color.Black, Color.Green1);
 
-Home.Show();
+Page.Show();
 
 Console.ReadLine();
