@@ -2,8 +2,9 @@
 using MoneyTracker;
 using Spectre.Console;
 
-Style MenuStyle = new(Color.Black, Color.Green1);
+Style MenuDisabledStyle = new(Color.Black, Color.Green1);
+Style MenuHighlightStyle = new(Color.Black, Color.LightGreen, Decoration.Bold);
 
-Page.Show();
+Home.Show(MenuDisabledStyle, MenuHighlightStyle);
 
 Console.ReadLine();

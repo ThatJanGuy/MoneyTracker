@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Spectre.Console;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,18 +12,17 @@ namespace MoneyTracker
         public void Body();
     }
 
-    public abstract class Page : IPageBody
+    public abstract class Page
     {
-        public void Show()
+        public static void Show(Style disabledStyle, Style highlightStyle)
         {
             Components.Header();
-            Components.MainMenu();
-            Body();
+            Components.MainMenu(disabledStyle, highlightStyle);
+            //Body();
         }
-        public abstract void Body();
     }
 
-    class Home : Page
+    class Home : Page, IPageBody
     {
         public void Body()
         {

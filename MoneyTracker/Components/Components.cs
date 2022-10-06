@@ -13,11 +13,11 @@ namespace MoneyTracker
         {
             AnsiConsole.Write(
                 new FigletText("MyBudget")
-                    .RightAligned()
+                    .Centered()
                     .Color(Color.RosyBrown));
         }
 
-        public static void MainMenu()
+        public static void MainMenu(Style disabledStyle, Style highlightStyle)
         {
             var menuChoice = AnsiConsole.Prompt(
                new SelectionPrompt<string>()
@@ -28,6 +28,8 @@ namespace MoneyTracker
                         "Edit transactions",
                         "Save and quit"
                    }));
+
+            Console.WriteLine(menuChoice);
         }
     }
 }
