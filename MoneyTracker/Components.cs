@@ -1,14 +1,9 @@
 ﻿using Spectre.Console;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MoneyTracker
 {
-    public class Components { 
+    public static class Components
+    {
         public static void Header()
         {
             AnsiConsole.Write(

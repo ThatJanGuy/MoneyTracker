@@ -1,10 +1,10 @@
-﻿//Settings
-using MoneyTracker;
-using Spectre.Console;
+﻿using MoneyTracker;
 
-Style MenuDisabledStyle = new(Color.Black, Color.Green1);
-Style MenuHighlightStyle = new(Color.Black, Color.LightGreen, Decoration.Bold);
+var account = new Account();
 
-Home.Show(MenuDisabledStyle, MenuHighlightStyle);
+account.AddTestData();
+
+account.Display();
+
 
 Console.ReadLine();
