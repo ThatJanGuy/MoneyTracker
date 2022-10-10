@@ -1,4 +1,6 @@
 ﻿using LittleHelpers;
+using System;
+using System.Transactions;
 
 namespace MoneyTracker
 {
@@ -36,7 +38,7 @@ namespace MoneyTracker
 
                 while (string.IsNullOrEmpty(title))
                 {
-                    Console.Write("Title".PadRight(28) + "> ");
+                    Console.Write("Title".PadRight(30) + "> ");
                     title = GetInput.GetString(out exit, "x");
                     if (exit) break;
                 }
@@ -44,7 +46,7 @@ namespace MoneyTracker
 
                 while (amount == null)
                 {
-                    Console.Write("Amount (lead - for expense)".PadRight(28) + "> ");
+                    Console.Write("Amount (lead '-' for expense)".PadRight(30) + "> ");
                     amount = GetInput.GetDecimal(out exit, "x");
                     if (exit) break;
                 }
@@ -52,7 +54,7 @@ namespace MoneyTracker
 
                 while (month == null)
                 {
-                    Console.Write("Month (1-12) ".PadRight(28) + "> ");
+                    Console.Write("Month (1-12) ".PadRight(30) + "> ");
                     month = GetInput.GetInt(out exit, "x", 1, 12);
                     if (exit) break;
                 }
@@ -119,6 +121,7 @@ namespace MoneyTracker
             {
                 while (true)
                 {
+                    Console.Clear();
                     this.orderDisplayBy = ' ';
                     this.sortDisplay = ' ';
 
@@ -128,13 +131,15 @@ namespace MoneyTracker
                         "(1) Month\n" +
                         "(2) Amount\n" +
                         "(3) Title\n" +
-                        "Enter number > ");
+                        "Enter choice > ");
 
                     orderDisplayBy = Console.ReadKey().KeyChar;
 
                     if (this.orderDisplayBy != '1' && this.orderDisplayBy != '2' && this.orderDisplayBy != '3')
                     {
-                        TextManipulation.ColoredText("Please chose a given option.", ConsoleColor.Red);
+                        TextManipulation.ColoredText("Please chose a given option." +
+                            "(Press any key to continue)\n", ConsoleColor.Red);
+                        Console.ReadKey();
                         continue;
                     }
 
@@ -145,7 +150,9 @@ namespace MoneyTracker
 
                     if (this.sortDisplay != '1' && this.sortDisplay != '2')
                     {
-                        TextManipulation.ColoredText("Please chose a given option.", ConsoleColor.Red);
+                        TextManipulation.ColoredText("Please chose a given option." +
+                            "(Press any key to continue)\n", ConsoleColor.Red);
+                        Console.ReadKey();
                         continue;
                     }
                     break;
@@ -181,12 +188,13 @@ namespace MoneyTracker
                     orderedList[i].Amount.ToString("C").PadRight(10));
             }
 
-            Console.Write($"\nTo EDIT a transaction press '1'.\n" +
-                $"To DELETE a transaction press '2'.\n" +
-                $"To ADD a transaction press '3'.\n" +
-                $"To CHANGE the SORTING PARAMETERS press '4'\n" +
-                $"To safe an exit press 'x'.\n" +
-                $"Enter number > ");
+            Console.Write($"\nPress:" +
+                $"(1) to EDIT a transaction.\n" +
+                $"(2) to DELETE a transaction.\n" +
+                $"(3) to ADD a transaction.\n" +
+                $"(4) to CHANGE the SORTING PARAMETERS.\n" +
+                $"(x) to SAFE AND EXIT.\n" +
+                $"Enter choice > ");
 
             int menuChoice = Console.ReadKey().KeyChar;
 
@@ -203,8 +211,9 @@ namespace MoneyTracker
                     }
                     if (cancel1) Display();
 
-                    Transaction toEdit = (Transaction)transactions.Where(t => t.Id == orderedList[(int)idToEdit].Id);
-                    toEdit.Edit();
+                    Guid targetTransactionGuid = orderedList[idToEdit.Value].Id;
+
+                    Edit(targetTransactionGuid);
 
                     break;
 
@@ -233,19 +242,88 @@ namespace MoneyTracker
                     Console.WriteLine("Safe");
                     break;
                 default:
-                    TextManipulation.ColoredText("Please enter a valid option.", ConsoleColor.Red);
+                    TextManipulation.ColoredText("\nPlease enter a valid option.\n(Press any key to continue)", ConsoleColor.Red);
+                    Console.ReadKey();
+                    Display();
                     break;
             }
         }
 
-        public void Edit(Transaction transaction)
+        public void Edit(Guid targetTransactionGuid)
         {
-            transactions.
-                Remove(transaction);
-            if (deletionSuccessful) TextManipulation.ColoredText("Transaction deleted", ConsoleColor.Green);
-            else TextManipulation.ColoredText("Operation failed", ConsoleColor.Red);
-            Console.WriteLine("\nPress ANY KEY to continue");
-            Console.ReadKey();
+            Transaction toEdit = transactions.FirstOrDefault(x => x.Id == targetTransactionGuid);
+            bool keepEditing = true;
+
+            while (keepEditing) { 
+                Console.Clear();
+                Console.Write(
+                    $"Your selected transaction is:\n" +
+                    $"(1) Title:  {toEdit.Title}\n" +
+                    $"(2) Month:  {toEdit.Month}\n" +
+                    $"(3) Amount: {toEdit.Amount}\n" +
+                    $"Please emter the number of the line you would like to edit or press.\n" +
+                    $"(x) to EXIT.\n" +
+                    $" > ");
+
+                char selection = Console.ReadKey().KeyChar;
+
+                switch (selection)
+                {
+                    case '1':
+                        bool exit = false;
+                        string? newTitle = null;
+
+                        Console.Write($"\nOld Title: {toEdit.Title}\n");
+                        while (newTitle == null)
+                        {
+                            Console.Write($"New Title: ");
+                            newTitle = GetInput.GetString(out exit, "x");
+                            if (exit) break;
+                        }
+                        if (exit) break;
+                        toEdit.Title = newTitle;
+                        break;
+
+                    case '2':
+                        exit = false;
+                        int? newMonth = null;
+
+                        Console.Write($"\nOld Month (1-12) >{toEdit.Title}\n");
+                        while (newMonth == null)
+                        {
+                            Console.Write("New Month (1-12) >");
+                            newMonth = GetInput.GetInt(out exit, "x", 1, 12);
+                            if (exit) break;
+                        }
+                        if (exit) break;
+                        toEdit.Month = newMonth.Value;
+                        break;
+
+                    case '3':
+                        exit = false;
+                        decimal? newAmount = null;
+
+                        Console.Write($"\nOld Amount >{toEdit.Title}\n");
+                        while (newAmount == null)
+                        {
+                            Console.Write("New Amount >");
+                            newAmount = GetInput.GetDecimal(out exit, "x", Decimal.MinValue, Decimal.MaxValue);
+                            if (exit) break;
+                        }
+                        if (exit) break;
+                        toEdit.Amount = newAmount.Value;
+                        break;
+
+                    case 'x':
+                        keepEditing = false;
+                        break;
+
+                    default:
+                        TextManipulation.ColoredText("Please select a valid option.\n(Press any key to continue)", ConsoleColor.Red);
+                        Console.ReadKey();
+                        break;
+                }
+            }
             Display();
         }
     }
