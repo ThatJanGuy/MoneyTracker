@@ -127,7 +127,8 @@
                 exit = false;
                 return null;
             }
-            else if (!int.TryParse(input, out int value))
+            
+            if (!int.TryParse(input, out int value))
             {
                 TextManipulation.ColoredText(
                     "Only integers are accepted.\n",
@@ -136,7 +137,8 @@
                 exit = false;
                 return null;
             }
-            else if ((result < min || result > max)! & (min == max))
+            
+            if ((value < min || value > max)! & (min != max))
             {
                 TextManipulation.ColoredText(
                     $"Value must be between {min} and {max} inclusive.\n",

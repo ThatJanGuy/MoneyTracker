@@ -7,8 +7,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <!-- <Compile Include="Transaction.cs" /> -->
+  <ItemGroup><!-- <Compile Include="Transaction.cs" /> -->
+  
+    <Folder Include="Data\" />
   </ItemGroup>
 
   <ItemGroup>
