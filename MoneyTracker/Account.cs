@@ -306,7 +306,7 @@ namespace MoneyTracker
                         exit = false;
                         int? newMonth = null;
 
-                        Console.Write($"\nOld Month (1-12) >{toEdit.Title}\n");
+                        Console.Write($"\nOld Month (1-12) >{toEdit.Month}\n");
                         while (newMonth == null)
                         {
                             Console.Write("New Month (1-12) >");
@@ -321,7 +321,7 @@ namespace MoneyTracker
                         exit = false;
                         decimal? newAmount = null;
 
-                        Console.Write($"\nOld Amount >{toEdit.Title}\n");
+                        Console.Write($"\nOld Amount >{toEdit.Amount}\n");
                         while (newAmount == null)
                         {
                             Console.Write("New Amount >");
